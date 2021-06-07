@@ -21,7 +21,7 @@ const routes: Routes = [
   {path: '**', redirectTo: '/home'}
 ];
 
-export function tokenGetter() {
+export function tokenGetter(): string | null {
   return localStorage.getItem('jwt_token');
 }
 
@@ -33,12 +33,12 @@ export function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter,
-        whitelistedDomains: environment.whitelistedDomains
+        allowedDomains: environment.allowedDomains
       }
     }),
     FormsModule,
     IonicModule.forRoot(),
-    RouterModule.forRoot(routes, {useHash: true})],
+    RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy' })],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
   ],

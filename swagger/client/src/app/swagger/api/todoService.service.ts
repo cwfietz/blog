@@ -9,7 +9,7 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-/* tslint:disable:no-unused-variable member-ordering */
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/member-ordering */
 
 import {Inject, Injectable, Optional} from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders, HttpResponse} from '@angular/common/http';
@@ -25,7 +25,7 @@ import {Configuration} from '../configuration';
 @Injectable()
 export class TodoServiceService {
 
-  public selectedTodo: Todo;
+  public selectedTodo: Todo | null = null;
 
   public defaultHeaders = new HttpHeaders();
   public configuration = new Configuration();
@@ -42,6 +42,21 @@ export class TodoServiceService {
   }
 
   /**
+   * @param consumes string[] mime-types
+   * @return true: consumes contains 'multipart/form-data', false: otherwise
+   */
+  private canConsumeForm(consumes: string[]): boolean {
+    const form = 'multipart/form-data';
+    for (const consume of consumes) {
+      if (form === consume) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  /**
    * Deletes a todo entry
    *
    * @param id Primary key of the todo entity
@@ -49,11 +64,8 @@ export class TodoServiceService {
    * @param reportProgress flag to report request and response progress.
    */
   public deleteUsingPOST(id: string, observe?: 'body', reportProgress?: boolean): Observable<any>;
-
   public deleteUsingPOST(id: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-
   public deleteUsingPOST(id: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-
   public deleteUsingPOST(id: string, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
     if (id === null || id === undefined) {
@@ -63,7 +75,7 @@ export class TodoServiceService {
     let headers = this.defaultHeaders;
 
     // to determine the Accept header
-    const httpHeaderAccepts: string[] = [
+    let httpHeaderAccepts: string[] = [
       '*/*'
     ];
     const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -94,17 +106,14 @@ export class TodoServiceService {
    * @param reportProgress flag to report request and response progress.
    */
   public listUsingGET(observe?: 'body', reportProgress?: boolean): Observable<Array<Todo>>;
-
   public listUsingGET(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Todo>>>;
-
   public listUsingGET(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Todo>>>;
-
   public listUsingGET(observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
     let headers = this.defaultHeaders;
 
     // to determine the Accept header
-    const httpHeaderAccepts: string[] = [
+    let httpHeaderAccepts: string[] = [
       '*/*'
     ];
     const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -133,11 +142,8 @@ export class TodoServiceService {
    * @param reportProgress flag to report request and response progress.
    */
   public saveUsingPOST(todo: Todo, observe?: 'body', reportProgress?: boolean): Observable<any>;
-
   public saveUsingPOST(todo: Todo, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-
   public saveUsingPOST(todo: Todo, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-
   public saveUsingPOST(todo: Todo, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
     if (todo === null || todo === undefined) {
@@ -147,7 +153,7 @@ export class TodoServiceService {
     let headers = this.defaultHeaders;
 
     // to determine the Accept header
-    const httpHeaderAccepts: string[] = [
+    let httpHeaderAccepts: string[] = [
       '*/*'
     ];
     const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -173,20 +179,6 @@ export class TodoServiceService {
         reportProgress: reportProgress
       }
     );
-  }
-
-  /**
-   * @param consumes string[] mime-types
-   * @return true: consumes contains 'multipart/form-data', false: otherwise
-   */
-  private canConsumeForm(consumes: string[]): boolean {
-    const form = 'multipart/form-data';
-    for (const consume of consumes) {
-      if (form === consume) {
-        return true;
-      }
-    }
-    return false;
   }
 
 }
